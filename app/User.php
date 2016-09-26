@@ -43,7 +43,7 @@ class User extends Model
             return ['status' => 0, 'msg' => 'db insert failed'];
     }
 
-    //登陆API
+    //登录API
     public function login() {
         //检查用户名和密码是否存在
         $has_username_and_password = $this->has_username_and_password();
@@ -64,5 +64,21 @@ class User extends Model
         session()->put('user_id', $user->id);
 
         return ['status' => 1, 'id' => $user->id];
+    }
+
+    //检测用户是否登录
+    public function is_logged_in() {
+        return session('user_id') ?: false;
+    }
+
+    //登出API
+    public function logout() {
+        //删除name和id
+        session()->forget('username');
+        session()->forget('user_id');
+        //session()->put('username', null);
+        //session()->put('user_id', null);
+        return ['status' => 1];
+        //return redirect('/');//可跳转到首页
     }
 }
