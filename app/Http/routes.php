@@ -11,6 +11,10 @@
 |
 */
 
+function user_ins() {
+    return new App\User;
+}
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -19,7 +23,10 @@ Route::any('api', function () {
     return 'version';
 });
 
-Route::any('api/user', function () {
-    $user = new App\User;
-    return $user->signup();
+Route::any('api/signup', function () {
+    return user_ins()->signup();
+});
+
+Route::any('api/login', function () {
+    return user_ins()->login();
 });
