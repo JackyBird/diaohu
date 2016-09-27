@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    public function has_username_and_password() {
-        $username = Request::get('username');
-        $password = Request::get('password');
+    public function has_username_and_password()
+    {
+        $username = rq('username');
+        $password = rq('password');
         //检查用户名和密码是否为空
         if ($username && $password)
             return [$username, $password];
@@ -18,7 +19,8 @@ class User extends Model
     }
 
     //注册API
-    public function signup() {
+    public function signup()
+    {
         $has_username_and_password = $this->has_username_and_password();
         if (!$has_username_and_password)
             return ['status' => 0, 'msg' => '用户名和密码皆不可为空'];
@@ -44,7 +46,8 @@ class User extends Model
     }
 
     //登录API
-    public function login() {
+    public function login()
+    {
         //检查用户名和密码是否存在
         $has_username_and_password = $this->has_username_and_password();
         if (!$has_username_and_password)
@@ -67,12 +70,14 @@ class User extends Model
     }
 
     //检测用户是否登录
-    public function is_logged_in() {
+    public function is_logged_in()
+    {
         return session('user_id') ?: false;
     }
 
     //登出API
-    public function logout() {
+    public function logout()
+    {
         //删除name和id
         session()->forget('username');
         session()->forget('user_id');
