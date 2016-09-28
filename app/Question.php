@@ -18,8 +18,8 @@ class Question extends Model
 
         $this->title = rq('title');
         $this->user_id = session('user_id');
-        if (rq('dest'))
-            $this->dest = rq('dest');
+        if (rq('desc'))
+            $this->desc = rq('desc');
 
         return $this->save() ?
             ['status' => 1, 'id' => $this->id] :
@@ -47,12 +47,12 @@ class Question extends Model
 
         if (rq('title'))
             $question->title = rq('title');
-        if (rq('dest'))
-            $question->dest = rq('dest');
+        if (rq('desc'))
+            $question->desc = rq('desc');
 
         //保存数据
         return $question->save() ?
             ['status' => 1] :
-            ['status' => 0, 'msg' => 'db update dailed'];
+            ['status' => 0, 'msg' => 'db update failed'];
     }
 }
