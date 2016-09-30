@@ -28,6 +28,11 @@ function question_ins()
     return new App\Question;
 }
 
+function answer_ins()
+{
+    return new App\Answer;
+}
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -62,6 +67,10 @@ Route::any('api/question/read', function () {
 
 Route::any('api/question/remove', function () {
     return question_ins()->remove();
+});
+
+Route::any('api/answer/add', function () {
+    return answer_ins()->add();
 });
 
 Route::any('test', function () {
