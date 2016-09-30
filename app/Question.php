@@ -26,6 +26,7 @@ class Question extends Model
             ['status' => 0, 'msg' => 'db insert failed'];
     }
 
+    //修改问题API
     public function change()
     {
         //检查用户是否登录
@@ -74,5 +75,26 @@ class Question extends Model
             ->keyBy('id');
 
         return ['status' => 1, 'data' => $r];
+    }
+
+    //删除问题API
+    public function remove()
+    {
+        //检查用户是否登录
+        if (!user_ins()->is_logged_in())
+            return ['status' => 0, 'msg' => 'login required'];
+        //检查传参是否有id
+        if (!rq('id'))
+            return ['status' => 0, 'msg' => 'id required'];
+        //获取传参id对应的model
+        $question = $this->find(rq('id'));
+        if (!$question) return ['status' => 0, 'msg' => 'question not exists'];
+        //检查是否为问题所有者所删除
+        if (session('user_id') != $question->user_id)
+            return ['status' => 0, 'msg' => 'permission denied'];
+        //删除问题
+        return $question->delete() ?
+            ['status' => 1] :
+            ['status' => 0, 'msg' => 'db delete failed'];
     }
 }

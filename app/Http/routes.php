@@ -60,6 +60,10 @@ Route::any('api/question/read', function () {
     return question_ins()->read();
 });
 
+Route::any('api/question/remove', function () {
+    return question_ins()->remove();
+});
+
 Route::any('test', function () {
     dd(user_ins()->is_logged_in());
 });
