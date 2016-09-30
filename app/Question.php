@@ -55,4 +55,24 @@ class Question extends Model
             ['status' => 1] :
             ['status' => 0, 'msg' => 'db update failed'];
     }
+
+    //查看问题API
+    public function read()
+    {
+        //如果有id,直接返回问题
+        if (rq('id'))
+            return ['status' => 1, 'msg' => $this->find(rq('id'))];
+        //用于分页
+        $limit = rq('limit') ?: 15;
+        $skip = (rq('page') ? rq('page') - 1 : 0) * $limit;
+        //构建query并返回数据
+        $r = $this
+            ->orderBy('created_at')
+            ->limit($limit)
+            ->skip($skip)
+            ->get(['id', 'title', 'desc', 'user_id', 'created_at', 'updated_at'])
+            ->keyBy('id');
+
+        return ['status' => 1, 'data' => $r];
+    }
 }

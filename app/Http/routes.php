@@ -56,6 +56,10 @@ Route::any('api/question/change', function () {
     return question_ins()->change();
 });
 
+Route::any('api/question/read', function () {
+    return question_ins()->read();
+});
+
 Route::any('test', function () {
     dd(user_ins()->is_logged_in());
 });
