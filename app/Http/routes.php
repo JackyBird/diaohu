@@ -73,6 +73,10 @@ Route::any('api/answer/add', function () {
     return answer_ins()->add();
 });
 
+Route::any('api/answer/change', function () {
+    return answer_ins()->change();
+});
+
 Route::any('test', function () {
     dd(user_ins()->is_logged_in());
 });

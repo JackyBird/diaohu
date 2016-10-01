@@ -34,4 +34,28 @@ class Answer extends Model
             ['status' => 0, 'id' => $this->id] :
             ['status' => 0, 'msg' => 'db insert failed'];
     }
+
+    //更新回答API
+    public function change()
+    {
+        //检查用户是否登录
+        if (!user_ins()->is_logged_in())
+            return ['status' => 0, 'msg' => 'login required'];
+        //检查参数中是否有question_id和content
+        if (!rq('id') || !rq('content'))
+            return ['status' => 0, 'msg' => 'id and content are required'];
+        $answer = $this->find(rq('id'));
+        //判断问题是否存在
+        if (!$answer)
+            return ['status' => 0, 'msg' => 'answer not exists'];
+        //检查是否为问题所有者修改
+        if ($answer->user_id != session('user_id'))
+            return ['status' => 0, 'msg' => 'permission denied'];
+        //保存修改后的content
+        $answer->content = rq('content');
+        return $answer->save() ?
+            ['status' => 1] :
+            ['status' => 0, 'msg' => 'db updated failed'];
+
+    }
 }
