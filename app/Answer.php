@@ -22,14 +22,12 @@ class Answer extends Model
         $answered = $this
             ->where(['question_id' => rq('question_id'), 'user_id' => session('user_id')])
             ->count();
-
         if ($answered)
             return ['status' => 0, 'msg' => 'duplicate answers'];
         //保存数据
         $this->content = rq('content');
         $this->question_id = rq('question_id');
         $this->user_id = session('user_id');
-
         return $this->save() ?
             ['status' => 0, 'id' => $this->id] :
             ['status' => 0, 'msg' => 'db insert failed'];
@@ -56,6 +54,28 @@ class Answer extends Model
         return $answer->save() ?
             ['status' => 1] :
             ['status' => 0, 'msg' => 'db updated failed'];
+    }
 
+    //查看回答API
+    public function read()
+    {
+        if (!rq('id') && !rq('question_id'))
+            return ['status' => 0, 'msg' => 'id and question_id are required'];
+        //单个回答查看
+        if (rq('id')) {
+            $answer = $this->find(rq('id'));
+            if (!$answer)
+                return ['status' => 0, 'msg' => 'answer not exists'];
+            return ['status' => 1, 'data' => $answer];
+        }
+        //检查问题是否存在
+        if (!question_ins()->find(rq('question_id')))
+            return ['status' => 0, 'msg' => 'question not exists'];
+        //查看同一问题下的所有回答
+        $answers = $this
+            ->where('question_id', rq('question_id'))
+            ->get()
+            ->keyBy('id');
+        return ['status' => 1, 'data' => $answers];
     }
 }
