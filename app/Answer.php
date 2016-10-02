@@ -59,6 +59,7 @@ class Answer extends Model
     //查看回答API
     public function read()
     {
+        //检查用户是否登录
         if (!rq('id') && !rq('question_id'))
             return ['status' => 0, 'msg' => 'id and question_id are required'];
         //单个回答查看
