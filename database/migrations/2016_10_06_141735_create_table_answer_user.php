@@ -21,6 +21,7 @@ class CreateTableAnswerUser extends Migration
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('answer_id')->references('id')->on('answers');
+            $table->unique(['user_id', 'answer_id', 'vote']);
         });
     }
 

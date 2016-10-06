@@ -86,4 +86,12 @@ class User extends Model
         return ['status' => 1];
         //return redirect('/');//可跳转到首页
     }
+
+    public function answers()
+    {
+        return $this
+            ->belongsToMany('App\Answer')
+            ->withPivot('vote')
+            ->withTimestamps();
+    }
 }
