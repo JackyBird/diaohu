@@ -71,6 +71,28 @@ class Comment extends Model
             $data = $this->where('answer_id', rq('answer_id'));
         }
         $data = $data->get()->keyBy('id');
-        return ['status' =>1, 'data'=>$data];
+        return ['status' => 1, 'data' => $data];
+    }
+
+    //删除评论API
+    public function remove()
+    {
+        //检查用户是否登录
+        if (!user_ins()->is_logged_in())
+            return ['status' => 0, 'msg' => 'login required'];
+        //检查是否有评论
+        if (!rq('id'))
+            return ['status' => 0, 'msg' => 'id required'];
+        $comment = $this->find(rq('id'));
+        if (!$comment)
+            return ['status' => 0, 'msg' => 'comment not exists'];
+        if ($comment->user_id != session('user_id'))
+            return ['status' => 0, 'msg' => 'permission denied'];
+        //先删除此评论下所有的回复
+        $this->where('reply_to', rq('id'))->delete();
+        //再进行删除操作
+        return $comment->delete() ?
+            ['status' => 1] :
+            ['status' => 0, 'msg' => 'db delete failed'];
     }
 }
