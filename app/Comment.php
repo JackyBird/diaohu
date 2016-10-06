@@ -40,7 +40,7 @@ class Comment extends Model
             if (!$target)
                 return ['status' => 0, 'msg' => 'target comment not exists'];
             //检查是否回复自己的评论
-            if ($target->user_id== session('user_id'))
+            if ($target->user_id == session('user_id'))
                 return ['status' => 0, 'msg' => 'can not reply to yourself'];
             $this->reply_to = rq('reply_to');
         }
@@ -50,5 +50,27 @@ class Comment extends Model
         return $this->save() ?
             ['status' => 1, 'id' => $this->id] :
             ['status' => 0, 'msg' => 'db insert failed'];
+    }
+
+    //查看评论API
+    public function read()
+    {
+        //检查用户是否登录
+        if (!rq('question_id') && !rq('answer_id'))
+            return ['status' => 0, 'msg' => 'question_id or answer_id is required'];
+        //判断是问题还是答案
+        if (rq('question_id')) {
+            $question = question_ins()->find(rq('question_id'));
+            if (!$question)
+                return ['status' => 0, 'msg' => 'question not exists'];
+            $data = $this->where('question_id', rq('question_id'));
+        } else {
+            $answer = answer_ins()->find(rq('answer_id'));
+            if (!$answer)
+                return ['status' => 0, 'msg' => 'answer not exists'];
+            $data = $this->where('answer_id', rq('answer_id'));
+        }
+        $data = $data->get()->keyBy('id');
+        return ['status' =>1, 'data'=>$data];
     }
 }
